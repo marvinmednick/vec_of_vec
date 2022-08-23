@@ -2,16 +2,16 @@
 use std::fmt::format;
 
 #[derive(Debug)]
-struct VecofVec<T> {
+struct VecOfVec<T> {
     array : Vec::<Vec<Option<T>>>,
-    x: usize,
-    y: usize
+    width: usize,
+    height: usize
 
 }
 
-impl<T:std::fmt::Debug+Clone+std::fmt::Display> VecofVec<T> {
+impl<T:std::fmt::Debug+Clone+std::fmt::Display> VecOfVec<T> {
 
-    pub fn new(x: usize, y: usize) -> VecofVec<T> {
+    pub fn new(x: usize, y: usize) -> VecOfVec<T> {
         let mut array = Vec::<Vec<Option<T>>>::new();
         for row in 0..y  {
             let mut row_data = Vec::<Option<T>>::new();
@@ -21,17 +21,27 @@ impl<T:std::fmt::Debug+Clone+std::fmt::Display> VecofVec<T> {
             array.push(row_data);
         }
 
-        VecofVec { array: array, x: x, y: y }
+        VecOfVec { array: array, width: x, height: y }
     }
 
     pub fn get(&self,x: usize, y: usize) -> Option<T> {
-        self.array[y][x].clone()
+        if x < self.width && y < self.height {
+            self.array[y][x].clone()
+        }
+        else {
+            None
+        }
     }
 
     pub fn get_string(&self,x: usize, y: usize) ->  String{
-        match &self.array[y][x] {
-            Some(val) => format!("{}",val),
-            None =>   format!("{}","N"),
+        if x < self.width && y < self.height {
+            match &self.array[y][x] {
+                Some(val) => format!("{}",val),
+                None =>   format!("{}","N"),
+            }
+        }
+        else {
+                format!("{}","N")
         }
     }
 
@@ -41,8 +51,9 @@ impl<T:std::fmt::Debug+Clone+std::fmt::Display> VecofVec<T> {
     }
 
     pub fn set(&mut self, x : usize, y : usize , value : T)  {
-        self.array[y][x] = Some(value);
-
+        if x < self.width && y < self.height {
+            self.array[y][x] = Some(value);
+        }
     }
 
 }
@@ -52,7 +63,7 @@ fn main() {
     let vertexes = 7;
     let iterations = vertexes-1;
 
-    let mut data : VecofVec<u32> = VecofVec::new(vertexes, iterations);
+    let mut data : VecOfVec<u32> = VecOfVec::new(vertexes, iterations);
 
 
     data.set(3,0,44);
@@ -78,4 +89,32 @@ fn main() {
 
 
 
+}
+
+
+#[cfg(test)]
+mod vec_of_vec_test {
+
+    use crate::VecOfVec;
+
+    #[test]
+    fn test_init() {
+        let size = 8; 
+        let mut data : VecOfVec<u32> = VecOfVec::new(size, size);
+
+
+        data.set(1,2,12);
+        data.set(2,3,23);
+        data.set(3,4,34);
+        data.set(6,7,67);
+        data.set(8,8,88);
+        for i in 0..size {
+            assert_eq!(data.get(i,i), None)
+        }
+        assert_eq!(data.get(1,2),Some(12));
+        assert_eq!(data.get(2,3),Some(23));
+        assert_eq!(data.get(3,4),Some(34));
+        assert_eq!(data.get(6,7),Some(67));
+        assert_eq!(data.get(8,8),None);
+    }
 }
