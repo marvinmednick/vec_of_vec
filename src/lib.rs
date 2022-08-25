@@ -1,5 +1,6 @@
 
 use std::fmt::format;
+use std::slice::Chunks;
 
 #[derive(Debug)]
 pub struct VecOfVec<T> {
@@ -102,12 +103,11 @@ impl<T:std::fmt::Debug+Clone+std::fmt::Display> FlattendArray<T> {
         }
     }
 
-/*
-    pub fn get_row_iter(&self) -> std::slice::Iter<Vec<Option<T>>> {
-        # need
-        self.array.iter()
+
+    pub fn get_row_iter(&self) -> Chunks<'_, Option<T>> {
+        self.array.chunks(self.width)
     }
-*/
+
 
     pub fn set(&mut self, x : usize, y : usize , value : T)  {
         if x < self.width && y < self.height {
