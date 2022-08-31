@@ -1,6 +1,63 @@
-#![feature(test)]
+
 use std::fmt::format;
 use std::slice::Chunks;
+
+#[derive(Debug)]
+pub struct VecOfVec<T> {
+    array : Vec::<Vec<Option<T>>>,
+    width: usize,
+    height: usize
+
+}
+
+impl<T:std::fmt::Debug+Clone+std::fmt::Display> VecOfVec<T> {
+
+    pub fn new(x: usize, y: usize) -> VecOfVec<T> {
+        let mut array = Vec::<Vec<Option<T>>>::new();
+        for row in 0..y  {
+            let mut row_data = Vec::<Option<T>>::new();
+            for col in 0..x {
+                row_data.push(None);
+            }
+            array.push(row_data);
+        }
+
+        VecOfVec { array: array, width: x, height: y }
+    }
+
+    pub fn get(&self,x: usize, y: usize) -> Option<T> {
+        if x < self.width && y < self.height {
+            self.array[y][x].clone()
+        }
+        else {
+            None
+        }
+    }
+
+    pub fn get_string(&self,x: usize, y: usize) ->  String{
+        if x < self.width && y < self.height {
+            match &self.array[y][x] {
+                Some(val) => format!("{}",val),
+                None =>   format!("{}","N"),
+            }
+        }
+        else {
+                format!("{}","N")
+        }
+    }
+
+
+    pub fn get_row_iter(&self) -> std::slice::Iter<Vec<Option<T>>> {
+        self.array.iter()
+    }
+
+    pub fn set(&mut self, x : usize, y : usize , value : T)  {
+        if x < self.width && y < self.height {
+            self.array[y][x] = Some(value);
+        }
+    }
+
+}
 
 
 #[derive(Debug)]
@@ -68,14 +125,75 @@ impl<T:std::fmt::Debug+Clone+std::fmt::Display> FlattendArray<T> {
 
 }
 
+/*
+fn main() { 
+    let vertexes = 7;
+    let iterations = vertexes-1;
+
+    let mut data : VecOfVec<u32> = VecOfVec::new(vertexes, iterations);
+
+
+    data.set(3,0,44);
+   
+    let mut count = 0;
+    let header : String = (0..vertexes).map(|val| format!("{:2} ",val)).collect();
+    println!("{:17} {}","Vertex",header);
+    for row in data.get_row_iter() {
+        let row_format : String = row.iter().map(|val| { 
+            match val {
+                Some(x) => format!("{:>2} ",val.unwrap()),
+                None    => format!("{:>2} ","N"),
+            }}).collect();
+        println!("Iteration {:2} :    {}", count,row_format);
+        count += 1
+    }
+
+    println!("Iter 0,Vertex 3 -> {}", data.get_string(3,0));
+    println!("Iter 1,Vertex 3 -> {}", data.get_string(3,1));
+
+    println!("Iter 4,Vertex 1 -> {}", data.get_string(1,4));
+    println!("Iter 6,Vertex 5 -> {}", data.get_string(6,5));
+
+
+
+}
+*/
+
 
 #[cfg(test)]
-mod array_test {
+mod vec_of_vec_test {
+
+    use crate::VecOfVec;
+
+    #[test]
+    fn test_init() {
+        let size = 8; 
+        let mut data : VecOfVec<u32> = VecOfVec::new(size, size);
+
+
+        data.set(1,2,12);
+        data.set(2,3,23);
+        data.set(3,4,34);
+        data.set(6,7,67);
+        data.set(8,8,88);
+        for i in 0..size {
+            assert_eq!(data.get(i,i), None)
+        }
+        assert_eq!(data.get(1,2),Some(12));
+        assert_eq!(data.get(2,3),Some(23));
+        assert_eq!(data.get(3,4),Some(34));
+        assert_eq!(data.get(6,7),Some(67));
+        assert_eq!(data.get(8,8),None);
+    }
+}
+
+#[cfg(test)]
+mod flattened_array_test {
 
     use crate::FlattendArray;
 
     #[test]
-    fn flattend_array_basic() {
+    fn test_init() {
         let size = 8; 
         let mut data : FlattendArray<u32> = FlattendArray::new(size, size);
 
@@ -94,6 +212,4 @@ mod array_test {
         assert_eq!(data.get(6,7),Some(67));
         assert_eq!(data.get(8,8),None);
     }
-
 }
-
