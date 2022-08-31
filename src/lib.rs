@@ -1,4 +1,4 @@
-
+#![feature(test)]
 use std::fmt::format;
 use std::slice::Chunks;
 
@@ -161,12 +161,13 @@ fn main() {
 
 
 #[cfg(test)]
-mod vec_of_vec_test {
+mod array_test {
 
     use crate::VecOfVec;
+    use crate::FlattendArray;
 
     #[test]
-    fn test_init() {
+    fn vec_of_vec_basic() {
         let size = 8; 
         let mut data : VecOfVec<u32> = VecOfVec::new(size, size);
 
@@ -185,15 +186,9 @@ mod vec_of_vec_test {
         assert_eq!(data.get(6,7),Some(67));
         assert_eq!(data.get(8,8),None);
     }
-}
-
-#[cfg(test)]
-mod flattened_array_test {
-
-    use crate::FlattendArray;
 
     #[test]
-    fn test_init() {
+    fn flattend_array_basic() {
         let size = 8; 
         let mut data : FlattendArray<u32> = FlattendArray::new(size, size);
 
@@ -212,4 +207,25 @@ mod flattened_array_test {
         assert_eq!(data.get(6,7),Some(67));
         assert_eq!(data.get(8,8),None);
     }
+
 }
+
+
+extern crate test;
+
+pub fn add_two(a: i32) -> i32 {
+    a + 2
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use test::Bencher;
+
+    #[bench]
+    fn bench_add_two(b: &mut Bencher) {
+        b.iter(|| add_two(2));
+    }
+
+}
+
