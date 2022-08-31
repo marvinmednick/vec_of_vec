@@ -468,6 +468,7 @@ dependencies = [
 ]
 
 [[package]]
+<<<<<<< HEAD
 name = "unicode-ident"
 version = "1.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -481,12 +482,30 @@ checksum = "3ed742d4ea2bd1176e236172c8429aaf54486e7ac098db29ffe6529e0ce50973"
 
 [[package]]
 name = "vec_of_vec"
+=======
+name = "two_d_array"
+>>>>>>> dafec9540741c8abaf968d5cf1dbdf9879fd86de
 version = "0.1.0"
 dependencies = [
  "criterion",
 ]
 
 [[package]]
+<<<<<<< HEAD
+=======
+name = "unicode-ident"
+version = "1.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c4f5b37a154999a8f3f98cc23a628d850e154479cd94decf3414696e12e31aaf"
+
+[[package]]
+name = "unicode-width"
+version = "0.1.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ed742d4ea2bd1176e236172c8429aaf54486e7ac098db29ffe6529e0ce50973"
+
+[[package]]
+>>>>>>> dafec9540741c8abaf968d5cf1dbdf9879fd86de
 name = "walkdir"
 version = "2.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
