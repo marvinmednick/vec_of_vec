@@ -34,6 +34,15 @@ fn main() {
     println!("using display");
     data.display("COL".to_string(),"ROW".to_string());
 
+    data.set(1,6,44);
+    data.set(2,6,22);
+    data.set(3,6,4);
+    data.set(4,6,100);
+    data.set(5,6,17);
+    data.set(6,6,-4);
+    data.set(7,6,24);
+
+    data.display("COL".to_string(),"ROW".to_string());
 
     println!("\n--------- Flattened Array ------- \n");
     let mut data : FlattendArray<u32> = FlattendArray::new(vertexes, iterations);
