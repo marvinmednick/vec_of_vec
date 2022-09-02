@@ -1,10 +1,11 @@
 use vec_of_vec::{VecOfVec,FlattendArray};
+use vec_of_vec::MinMax::{Value,Min,Max,NA};
 
 fn main() { 
     let vertexes = 7;
     let iterations = vertexes-1;
 
-    let mut data : VecOfVec<u32> = VecOfVec::new(vertexes, iterations);
+    let mut data : VecOfVec<u32> = VecOfVec::new(vertexes, iterations,NA);
 
 
     data.set(3,0,44);
@@ -15,8 +16,10 @@ fn main() {
     for row in data.get_row_iter() {
         let row_format : String = row.iter().map(|val| { 
             match val {
-                Some(x) => format!("{:>2} ",val.unwrap()),
-                None    => format!("{:>2} ","N"),
+                Value(x) => format!("{:>2} ",x),
+                Min    => format!("{:>2} ","m"),
+                Max    => format!("{:>2} ","M"),
+                NA    => format!("{:>2} ","NA"),
             }}).collect();
         println!("Iteration {:2} :    {}", count,row_format);
         count += 1
@@ -27,6 +30,9 @@ fn main() {
 
     println!("Iter 4,Vertex 1 -> {}", data.get_string(1,4));
     println!("Iter 6,Vertex 5 -> {}", data.get_string(6,5));
+
+    println!("using display");
+    data.display("COL".to_string(),"ROW".to_string());
 
 
     println!("\n--------- Flattened Array ------- \n");
@@ -57,7 +63,7 @@ fn main() {
     for row in data.get_row_iter() {
         let row_format : String = row.iter().map(|val| { 
             match val {
-                Some(x) => format!("{:>2} ",val.unwrap()),
+                Some(x) => format!("{:>2} ",x),
                 None    => format!("{:>2} ","N"),
             }}).collect();
         println!("Iteration {:2} :    {}", count,row_format);
