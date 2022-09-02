@@ -2,13 +2,16 @@ use vec_of_vec::{VecOfVec,FlattendArray};
 use vec_of_vec::MinMax::{Value,Min,Max,NA};
 
 fn main() { 
+    env_logger::init();
+
     let vertexes = 7;
     let iterations = vertexes-1;
 
-    let mut data : VecOfVec<u32> = VecOfVec::new(vertexes, iterations,NA);
+    let mut data : VecOfVec<i32> = VecOfVec::new(vertexes, iterations,NA);
 
 
-    data.set(3,0,44);
+    data.set(3,0,Value(44));
+    data.set(1,2,Value(44));
    
     let mut count = 0;
     let header : String = (0..vertexes).map(|val| format!("{:2} ",val)).collect();
@@ -34,15 +37,32 @@ fn main() {
     println!("using display");
     data.display("COL".to_string(),"ROW".to_string());
 
-    data.set(1,6,44);
-    data.set(2,6,22);
-    data.set(3,6,4);
-    data.set(4,6,100);
-    data.set(5,6,17);
-    data.set(6,6,-4);
-    data.set(7,6,24);
 
-    data.display("COL".to_string(),"ROW".to_string());
+
+    println!("setting values row 5");
+    let row = 5;
+    data.set(1,row,Value(44));
+    data.set(2,row,Value(22));
+    data.set(3,row,Value(4));
+    data.set(4,row,Value(100));
+    data.set(5,row,Value(-4));
+    data.set(6,row,Value(24));
+
+    println!("setting values row 4");
+    let row = 4;
+    data.set(1,row,Min);
+    data.set(2,row,Value(22));
+    data.set(3,row,Max);
+    data.set(4,row,Value(100));
+    data.set(5,row,Value(-4));
+    data.set(6,row,NA);
+
+    let mut index = 0;
+    for row in data.get_row_iter() {
+        let min = row.iter().min();
+        println!("Row {} min is {:?}",index,min);
+        index += 1;
+    }
 
     println!("\n--------- Flattened Array ------- \n");
     let mut data : FlattendArray<u32> = FlattendArray::new(vertexes, iterations);

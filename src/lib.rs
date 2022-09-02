@@ -1,5 +1,6 @@
 #![feature(test)]
 use std::slice::Chunks;
+use log::{error};
 
 #[derive(Debug,Clone,PartialOrd,Ord,PartialEq,Eq)]
 pub enum MinMax<T> {
@@ -60,9 +61,12 @@ impl<T:std::fmt::Debug+Clone+std::fmt::Display+std::cmp::Ord> VecOfVec<T> {
         self.array.iter()
     }
 
-    pub fn set(&mut self, x : usize, y : usize , value : T)  {
+    pub fn set(&mut self, x : usize, y : usize , value : MinMax<T>)  {
         if x < self.width && y < self.height {
-            self.array[y][x] = MinMax::Value(value);
+            self.array[y][x] = value;
+        }
+        else {
+            error!("Invalid set indexes x {} (max {}) y {} (max {}) ",x,y,self.width,self.height);
         }
     }
 
@@ -76,7 +80,7 @@ impl<T:std::fmt::Debug+Clone+std::fmt::Display+std::cmp::Ord> VecOfVec<T> {
                     MinMax::Value(x) => format!("{:>2} ",x),
                     MinMax::Min    => format!("{:>2} ","m"),
                     MinMax::Max    => format!("{:>2} ","M"),
-                    MinMax::NA    => format!("{:>2} ","N"),
+                    MinMax::NA    => format!("{:>2} ","NA"),
                 }}).collect();
             println!("{} {:2} :    {}",row_name, count,row_format);
             count += 1
