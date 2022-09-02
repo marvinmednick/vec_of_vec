@@ -1,6 +1,7 @@
 #![feature(test)]
 use std::slice::Chunks;
 use log::{error};
+use std::fmt;
 
 #[derive(Debug,Clone,PartialOrd,Ord,PartialEq,Eq)]
 pub enum MinMax<T> {
@@ -10,6 +11,19 @@ pub enum MinMax<T> {
     NA,
 }
 
+// Implement `Display` for `MinMax`.
+impl<T: fmt::Display> fmt::Display for MinMax<T>
+
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            MinMax::Min => write!(f,  "Min"),
+            MinMax::Max => write!(f,   "Max"),
+            MinMax::NA  => write!(f,   "NA"),
+            MinMax::Value(ref x) =>  write!(f, "{}",x)
+        }
+    }
+}
 
 #[derive(Debug)]
 pub struct VecOfVec<T: std::cmp::Ord> {
@@ -205,14 +219,14 @@ mod array_test {
         let mut data : VecOfVec<u32> = VecOfVec::new(size, size,NA);
 
 
-        data.set(1,2,12);
-        data.set(2,3,23);
-        data.set(3,4,34);
-        data.set(6,7,67);
-        data.set(8,8,88);
         for i in 0..size {
             assert_eq!(data.get(i,i), NA)
         }
+        data.set(1,2,Value(12));
+        data.set(2,3,Value(23));
+        data.set(3,4,Value(34));
+        data.set(6,7,Value(67));
+        data.set(8,8,Value(88));
         assert_eq!(data.get(1,2),Value(12));
         assert_eq!(data.get(2,3),Value(23));
         assert_eq!(data.get(3,4),Value(34));
@@ -248,6 +262,15 @@ mod array_test {
         assert!(Value(100000)<Max);
         assert!(Value(100000)<NA);
         assert!(Min::<u64> < NA::<u64>);
+    }
+
+    #[test]
+    fn min_max_format_test() {
+        assert_eq!(format!("{}",Value(0)),"0");
+        assert_eq!(format!("{}",Value(100)),"100");
+        assert_eq!(format!("{}",Min::<u32>),"Min");
+        assert_eq!(format!("{}",Max::<u32>),"Max");
+        assert_eq!(format!("{}",NA::<u32>),"NA");
     }
 
 }
